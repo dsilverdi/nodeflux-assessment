@@ -1,0 +1,8 @@
+version: '3'
+services: 
+  nodeflux-assesment:
+    build: .
+    ports:
+      - "80:5000"
+    volumes:
+      -  .:/app
