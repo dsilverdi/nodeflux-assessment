@@ -48,6 +48,8 @@ def get_specific_year_data(year):
             payload["deaths"] += data["jumlah_meninggal"]["value"]
             payload["recovered"] += data["jumlah_sembuh"]["value"]
         
+        if yeardata > year:
+            return payload
 
     return payload
 
@@ -66,8 +68,7 @@ def get_yearly_data_list(sinceYear, uptoYear=None):
         data = dataharian[i] 
         year = parse(str(data["key_as_string"])).year
         
-        if sinceYear <= year and uptoYear >= year:
-            # print(year)            
+        if sinceYear <= year and uptoYear >= year:        
             payload = {
                 "year":year,
                 "positive":0,
@@ -209,7 +210,9 @@ def get_specific_month_data(year,month):
             payload["active"] += data["jumlah_dirawat"]["value"]
             payload["deaths"] += data["jumlah_meninggal"]["value"]
             payload["recovered"] += data["jumlah_sembuh"]["value"]
-        
+            
+        if date.year > int(year) or (date.year == int(year) and date.month > int(month)):
+            return payload
 
     return payload
 
@@ -229,7 +232,6 @@ def get_daily_data_list(since, upto=None):
 
     dataharian = r["update"]["harian"]
 
-    print(upto, since)
     for data in dataharian:
         payload = {
             "date":"",
@@ -240,7 +242,6 @@ def get_daily_data_list(since, upto=None):
         }
         date = parse(str(data["key_as_string"])).date()
         if since <= date and upto >= date:
-            print(date)
             payload["date"] = str(date)
             payload["positive"] = data["jumlah_positif"]["value"]
             payload["active"] = data["jumlah_dirawat"]["value"]
@@ -336,17 +337,6 @@ def get_specific_daily_data(year, month, day):
             payload["active"] = data["jumlah_dirawat"]["value"]
             payload["deaths"] = data["jumlah_meninggal"]["value"]
             payload["recovered"] = data["jumlah_sembuh"]["value"]
+            return payload
 
     return payload
-
-
-# print(get_monthly_data_list('2020.02','2020.05'))
-# print(get_monthly_data_by_year(2020))
-# print(get_specific_month_data(2020,'03'))
-
-# print(get_specific_year_data(2020))
-# print(get_yearly_data_list(2020))
-
-# print(get_daily_data_list('2020.04.01','2020.04.03'))
-# print(get_daily_data_list('2020.03.02'))
-# print(get_daily_data_list('2020.03.02'))
